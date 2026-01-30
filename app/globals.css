@@ -1,112 +1,139 @@
+@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-:root {
-  --background: #f5f3ef;
-  --foreground: #1a1a1a;
-  --accent: #6b7a5a;
-  --accent-light: #e8ebe4;
-  --border: #1a1a1a;
-  --muted: #737373;
-  --error: #c45c5c;
-  --deadline: #d4a574;
+@theme {
+  --color-background: #f5f3ef;
+  --color-foreground: #1a1a1a;
+  --color-accent: #6b7a5a;
+  --color-accent-light: #e8ebe4;
+  --color-border: #1a1a1a;
+  --color-muted: #737373;
+  --color-error: #c45c5c;
+  --color-deadline: #d4a574;
+  --color-card: #ffffff;
 }
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  background-color: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-background);
+  color: var(--color-foreground);
   min-height: 100vh;
 }
 
-@layer components {
-  .actio-card {
-    @apply bg-white p-6 rounded-sm;
-    border: 2px solid var(--border);
-    box-shadow: 4px 4px 0px 0px var(--border);
-  }
+.actio-card {
+  background-color: var(--color-card);
+  padding: 1.5rem;
+  border-radius: 2px;
+  border: 2px solid var(--color-border);
+  box-shadow: 4px 4px 0px 0px var(--color-border);
+}
 
-  .actio-input {
-    @apply w-full p-4 rounded-sm bg-white resize-none;
-    border: 2px solid var(--border);
-    font-family: inherit;
-    font-size: 1rem;
-    line-height: 1.6;
-    transition: box-shadow 0.15s ease;
-  }
+.actio-input {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 2px;
+  background-color: var(--color-card);
+  border: 2px solid var(--color-border);
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: none;
+  transition: box-shadow 0.15s ease;
+}
 
-  .actio-input:focus {
-    outline: none;
-    box-shadow: 4px 4px 0px 0px var(--border);
-  }
+.actio-input:focus {
+  outline: none;
+  box-shadow: 4px 4px 0px 0px var(--color-border);
+}
 
-  .actio-input::placeholder {
-    color: var(--muted);
-  }
+.actio-input::placeholder {
+  color: var(--color-muted);
+}
 
-  .actio-button {
-    @apply px-6 py-3 font-semibold uppercase tracking-wide cursor-pointer rounded-sm;
-    background-color: var(--accent);
-    color: white;
-    border: 2px solid var(--border);
-    box-shadow: 3px 3px 0px 0px var(--border);
-    transition: all 0.15s ease;
-  }
+.actio-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
-  .actio-button:hover:not(:disabled) {
-    box-shadow: 1px 1px 0px 0px var(--border);
-    transform: translate(2px, 2px);
-  }
+.actio-button {
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border-radius: 2px;
+  background-color: var(--color-accent);
+  color: white;
+  border: 2px solid var(--color-border);
+  box-shadow: 3px 3px 0px 0px var(--color-border);
+  transition: all 0.15s ease;
+}
 
-  .actio-button:active:not(:disabled) {
-    box-shadow: none;
-    transform: translate(3px, 3px);
-  }
+.actio-button:hover:not(:disabled) {
+  box-shadow: 1px 1px 0px 0px var(--color-border);
+  transform: translate(2px, 2px);
+}
 
-  .actio-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+.actio-button:active:not(:disabled) {
+  box-shadow: none;
+  transform: translate(3px, 3px);
+}
 
-  .actio-button-secondary {
-    @apply px-4 py-2 font-medium cursor-pointer rounded-sm text-sm;
-    background-color: white;
-    color: var(--foreground);
-    border: 2px solid var(--border);
-    box-shadow: 2px 2px 0px 0px var(--border);
-    transition: all 0.15s ease;
-  }
+.actio-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-  .actio-button-secondary:hover {
-    box-shadow: 0px 0px 0px 0px var(--border);
-    transform: translate(2px, 2px);
-  }
+.actio-button-secondary {
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 2px;
+  font-size: 0.875rem;
+  background-color: var(--color-card);
+  color: var(--color-foreground);
+  border: 2px solid var(--color-border);
+  box-shadow: 2px 2px 0px 0px var(--color-border);
+  transition: all 0.15s ease;
+}
 
-  .actio-checkbox {
-    @apply flex items-start gap-3 py-2;
-  }
+.actio-button-secondary:hover {
+  box-shadow: 0px 0px 0px 0px var(--color-border);
+  transform: translate(2px, 2px);
+}
 
-  .actio-checkbox-box {
-    @apply w-5 h-5 flex-shrink-0 mt-0.5 rounded-sm;
-    border: 2px solid var(--border);
-    background-color: white;
-  }
+.actio-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+}
 
-  .actio-deadline {
-    color: var(--deadline);
-    font-weight: 600;
-  }
+.actio-checkbox-box {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+  margin-top: 0.125rem;
+  border-radius: 2px;
+  border: 2px solid var(--color-border);
+  background-color: var(--color-card);
+}
 
-  .actio-error {
-    color: var(--error);
-    font-weight: 500;
-  }
+.actio-deadline {
+  color: var(--color-deadline);
+  font-weight: 600;
+}
 
-  .actio-section-title {
-    @apply text-sm font-bold uppercase tracking-wide mb-3;
-    color: var(--muted);
-  }
+.actio-error {
+  color: var(--color-error);
+  font-weight: 500;
+}
+
+.actio-section-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+  color: var(--color-muted);
 }
