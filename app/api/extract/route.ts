@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { checkRateLimit, incrementRateLimit } from '@/lib/rateLimit';
+import { cleanupInput } from '@/lib/cleanup';
 
 const SYSTEM_PROMPT = `You are Actio, an action extraction engine. Your ONLY job is to extract actionable steps from text.
 
@@ -29,6 +31,20 @@ OUTPUT FORMAT (JSON only, no markdown):
 
 export async function POST(request: NextRequest) {
   try {
+    // Get client IP for rate limiting
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
+               request.headers.get('x-real-ip') || 
+               'unknown';
+
+    // Check rate limit
+    const rateLimitResult = checkRateLimit(ip);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: rateLimitResult.error },
+        { status: 429 }
+      );
+    }
+
     const { text, strictMode } = await request.json();
 
     if (!text || typeof text !== 'string') {
@@ -53,7 +69,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userPrompt = `${strictMode ? '[STRICT MODE ENABLED]\n\n' : ''}Extract actions from this text:\n\n${text}`;
+    // Clean up input before processing
+    const cleanedText = cleanupInput(text);
+    const userPrompt = `${strictMode ? '[STRICT MODE ENABLED]\n\n' : ''}Extract actions from this text:\n\n${cleanedText}`;
 
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -82,6 +100,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Increment rate limit on successful API call
+    incrementRateLimit(ip);
+
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content;
 
@@ -109,7 +130,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('API error:', error);
     return NextResponse.json(
-      { error: "Couldn't extract clear actions. Try again later." },
+      { error: "Couldn't extract actions. Try again later." },
       { status: 500 }
     );
   }
